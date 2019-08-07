@@ -32,7 +32,7 @@ public class Edit_Profile_popup extends AppCompatActivity {
         camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //되는지 확인용
+                //되는지 확인용?
 
             }
         });
@@ -57,10 +57,7 @@ public class Edit_Profile_popup extends AppCompatActivity {
         //바깥레이어 클릭시 안닫히게
         @Override
         public boolean onTouchEvent(MotionEvent event) {
-            if(event.getAction()==MotionEvent.ACTION_OUTSIDE){
-                return false;
-            }
-            return true;
+            return event.getAction() != MotionEvent.ACTION_OUTSIDE;
         }
 
 
