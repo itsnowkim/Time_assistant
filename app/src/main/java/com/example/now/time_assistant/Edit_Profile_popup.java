@@ -32,6 +32,7 @@ public class Edit_Profile_popup extends AppCompatActivity {
         camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //되는지 확인용
 
             }
         });
@@ -39,7 +40,8 @@ public class Edit_Profile_popup extends AppCompatActivity {
         gallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
+
+                //되는지 확인용
             }
         });
 
