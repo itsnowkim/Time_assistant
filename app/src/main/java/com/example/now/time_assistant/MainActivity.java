@@ -41,6 +41,10 @@ public class MainActivity extends AppCompatActivity {
         user_img = findViewById(R.id.user_profile_image);
 
 
+        user_img.setBackground(new ShapeDrawable(new OvalShape()));
+        if(Build.VERSION.SDK_INT >= 21) {
+            user_img.setClipToOutline(true);
+        }
         //list 임의로 추가 시험 - 10개만 해 봄. 이 부분은 listview, addview라고 검색하면 공부할 수 있음. 내 블로그에도 있음
         appointments = new ArrayList<>();
         for(int i=0;i<10;i++) {

@@ -12,15 +12,14 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="250dp">
+        android:layout_height="400dp">
 
 
         <ImageView
             android:id="@+id/user_background_image"
 
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/colorPrimaryDark" />
+            android:layout_height="match_parent" />
 
         <ImageView
             android:id="@+id/pencil"
@@ -36,11 +35,13 @@
         <ImageView
             android:id="@+id/user_profile_image"
 
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_centerInParent="true"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
 
-            android:layout_marginBottom="411dp"
+            android:layout_alignParentBottom="true"
+
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="71dp"
             android:background="@drawable/round"
             />
 
