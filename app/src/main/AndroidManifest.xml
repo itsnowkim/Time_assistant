@@ -7,8 +7,6 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -30,9 +28,10 @@
             android:name=".User_Profile_Edit"
             android:label="@string/title_activity_user__profile__edit" />
         <activity android:name=".Make_room" />
-        <activity android:name=".Edit_Profile_popup"
-            android:theme="@style/popup"
-            ></activity>
+        <activity
+            android:name=".Edit_Profile_popup"
+            android:theme="@style/popup" />
+        <activity android:name=".Room"></activity>
     </application>
 
 </manifest>

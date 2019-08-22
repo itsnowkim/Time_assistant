@@ -18,6 +18,7 @@
         <ImageView
             android:id="@+id/user_background_image"
 
+            android:background="@color/colorPrimary"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
@@ -70,20 +71,16 @@
         android:textSize="20sp"
         />
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="vertical"
-        >
-        <LinearLayout
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/main_list_container"
 
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
+            android:scrollbars="vertical"
+
             >
-        </LinearLayout>
-    </ScrollView>
+        </android.support.v7.widget.RecyclerView>
 
 
 

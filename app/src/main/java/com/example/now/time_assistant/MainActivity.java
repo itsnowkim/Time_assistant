@@ -1,6 +1,7 @@
 package com.example.now.time_assistant;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.os.Build;
@@ -9,6 +10,8 @@ import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,12 +26,16 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    List<Appointment> appointments;
-    LayoutInflater layoutInflater;
     LinearLayout container;
     ImageView pencil;
     TextView user_name;
     ImageView user_img;
+
+    private List<AppointmentData> list_apointment;
+    private RecyclerView recyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager layoutManager;
+
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
@@ -41,37 +48,28 @@ public class MainActivity extends AppCompatActivity {
         user_img = findViewById(R.id.user_profile_image);
 
 
+        /**프로필 이미지 둥글게
+         * */
         user_img.setBackground(new ShapeDrawable(new OvalShape()));
         if(Build.VERSION.SDK_INT >= 21) {
             user_img.setClipToOutline(true);
+            user_img.setBackground(new ShapeDrawable(new OvalShape()));
+            //user_img.setBackgroundColor(Color.rgb(65, 246, 197));
         }
-        //list 임의로 추가 시험 - 10개만 해 봄. 이 부분은 listview, addview라고 검색하면 공부할 수 있음. 내 블로그에도 있음
-        appointments = new ArrayList<>();
-        for(int i=0;i<10;i++) {
-            Appointment ap1 = new Appointment("약속 "+ i, "default");
 
-            appointments.add(ap1);
-        }
-        layoutInflater = LayoutInflater.from(MainActivity.this);
-        container = findViewById(R.id.main_list_container);
+        /**밑의 리스트 추가하는 과정
+         **/
+        recyclerView = findViewById(R.id.main_list_container);
+        recyclerView.setHasFixedSize(true);
+        // use a linear layout manager
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
 
-        for(int i=0;i<appointments.size();i++){
-            View view = layoutInflater.inflate(R.layout.main_promise_content,null,false);
-            TextView name = view.findViewById(R.id.list_content_name);
-            ImageView imageView = view.findViewById(R.id.list_content_image);
-
-            name.setText(appointments.get(i).appointment_name);
-            imageView.setImageResource(R.drawable.ic_launcher_foreground);
-
-            imageView.setBackground(new ShapeDrawable(new OvalShape()));
-            if(Build.VERSION.SDK_INT >= 21) {
-                imageView.setClipToOutline(true);
-            }
-            container.addView(view);
-        }
+        getAppointments();
+        /**
+         **/
 
         //화면 오른쪽 밑에 떠 있는 fab에 대한 내용
-        //새로운 방을 파는 activity
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,10 +92,46 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-
     }
 
+    //밑의 리스트 데이터 받고,
+    //set해주는 함수
+    public void getAppointments(){
+        list_apointment = new ArrayList<>();
+
+        //list_appointment에 사용자가 방 만들면 그 정보를 넣어줘야 함
+        //원래는 get~해서 어디선가 데이터베이스에서 가져와서 넣어야겠지
+
+        /**sample data**/
+        for(int i=0;i<5;i++){
+            AppointmentData appointData = new AppointmentData();
+            appointData.setAppointment_date_created("2019/08/22");
+            appointData.setAppointment_img("for test");
+            appointData.setAppointment_name("약속 "+ i);
+            appointData.setAppointment_time("00:00~15:00");
+            appointData.setDate_start_end("2019/08/22,2019/08/31");
+
+            list_apointment.add(appointData);
+        }
+        /****/
+
+        mAdapter = new AppointmentAdapter(list_apointment, MainActivity.this, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Object obj = v.getTag();
+                if(obj != null){
+                    int position = (int)obj;
+                    ((AppointmentAdapter)mAdapter).getAppointment(position);
+
+                    Intent intent = new Intent(MainActivity.this,Room.class);
+                    // intent.setPackage("com.android.chrome");   // 브라우저가 여러개 인 경우 콕 찍어서 크롬을 지정할 경우
+                    startActivity(intent);
+                }else{          }
+            }
+        });
+        recyclerView.setAdapter(mAdapter);
+
+    }
 
 
 }
