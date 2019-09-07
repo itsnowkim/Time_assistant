@@ -2,6 +2,7 @@ package com.example.now.time_assistant;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -25,6 +26,7 @@ import android.widget.Toolbar;
 import org.w3c.dom.Text;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -160,9 +162,11 @@ public class User_Profile_Edit extends Activity {
                 switch (flag) {
                     case BACKGROUND_IMAGE_CLICK :
                         userBackground.setImageBitmap(imgBitmap);
+                        resultPhotoBitBack = imgBitmap;
                         break;
                     case PROFILE_IMAGE_CLICK :
                         userProfile.setImageBitmap(imgBitmap);
+                        resultPhotoBitProfile = imgBitmap;
                         break;
                 }
 
@@ -276,13 +280,20 @@ public class User_Profile_Edit extends Activity {
 
         switch (flag){
             case BACKGROUND_IMAGE_CLICK:
-                resultPhotoBitBack = BitmapFactory.decodeFile(picturePath);
-                userBackground.setImageBitmap(resultPhotoBitBack);
+                try{
+                    Bitmap bm = BitmapFactory.decodeFile(picturePath);
+                    userBackground.setImageBitmap(bm);
+                }catch(Exception e) {
+                    e.printStackTrace();
+                }
                 break;
             case PROFILE_IMAGE_CLICK:
-                resultPhotoBitProfile = BitmapFactory.decodeFile(picturePath);
-                userProfile.setImageBitmap(resultPhotoBitProfile);
-
+                try{
+                    Bitmap bm = BitmapFactory.decodeFile(picturePath);
+                    userProfile.setImageBitmap(bm);
+                }catch(Exception e) {
+                    e.printStackTrace();
+                }
                 break;
         }
     }
@@ -385,39 +396,28 @@ public class User_Profile_Edit extends Activity {
 
         switch (flag){
             case BACKGROUND_IMAGE_CLICK :
-                File pfb = new File(AppConstants.FOLDER_PHOTO_PROFILE);
-
-                if(!pfb.isDirectory()) {
-                    pfb.mkdirs();
-                }
-                String photoFileBack = createFilename();
-                picturePath = pfb + File.separator + photoFileBack;
-
                 try{
-                    FileOutputStream outstream = new FileOutputStream(picturePath);
-                    resultPhotoBitBack.compress(Bitmap.CompressFormat.PNG, 100, outstream);
-                    outstream.close();
-                } catch (IOException e) {
+                    File file = new File("back.png");
+                    FileOutputStream fos = openFileOutput("back.png" , 0);
+                    resultPhotoBitBack.compress(Bitmap.CompressFormat.PNG, 100 , fos);
+                    fos.flush();
+                    fos.close();
+                }catch(Exception e) {
                     e.printStackTrace();
                 }
+                picturePath =  "/data/data/com.example.now.time_assistant/files/back.png";
                 break;
             case PROFILE_IMAGE_CLICK :
-                File photoFolder = new File(AppConstants.FOLDER_PHOTO_PROFILE);
-
-                if(!photoFolder.isDirectory()) {
-                    photoFolder.mkdirs();
-                }
-
-                String photoFilename = createFilename();
-                picturePath = photoFolder + File.separator + photoFilename;
-
-                try {
-                    FileOutputStream outstream = new FileOutputStream(picturePath);
-                    resultPhotoBitProfile.compress(Bitmap.CompressFormat.PNG, 100, outstream);
-                    outstream.close();
-                } catch(Exception e) {
+                try{
+                    File file = new File("profile.png");
+                    FileOutputStream fos = openFileOutput("profile.png" , 0);
+                    resultPhotoBitProfile.compress(Bitmap.CompressFormat.PNG, 100 , fos);
+                    fos.flush();
+                    fos.close();
+                }catch(Exception e) {
                     e.printStackTrace();
                 }
+                picturePath =  "/data/data/com.example.now.time_assistant/files/profile.png";
                 break;
         }
         return picturePath;
@@ -435,7 +435,7 @@ public class User_Profile_Edit extends Activity {
         String picture_profile_Path = savePicture(PROFILE_IMAGE_CLICK);
         String picture_back_Path = savePicture(BACKGROUND_IMAGE_CLICK);
 
-
+    //data/data/com.example.now.time_assistant/files/파일이름
 
         String sql = "update " + ProfileDatabase.TABLE_PROFILE +
                 " set " +
