@@ -37,9 +37,6 @@ import java.util.Date;
 
 public class User_Profile_Edit extends Activity {
 
-    public static final int BACKGROUND_IMAGE_CLICK = -1;
-    public static final int PROFILE_IMAGE_CLICK = -2;
-
     ImageView backward;
     ImageView ok_sign;
     int flag = 0;
@@ -117,7 +114,7 @@ public class User_Profile_Edit extends Activity {
             public void onClick(View v) {
                 //배경 변경 위해 누름.
                 openGallery();
-                flag = BACKGROUND_IMAGE_CLICK;
+                flag = AppConstants.BACKGROUND_IMAGE_CLICK;
             }
         });
 
@@ -126,7 +123,7 @@ public class User_Profile_Edit extends Activity {
             public void onClick(View v) {
                 //profile 사진 변경 하려고 누름
                 openGallery();
-                flag = PROFILE_IMAGE_CLICK;
+                flag = AppConstants.PROFILE_IMAGE_CLICK;
             }
         });
         /****/
@@ -160,11 +157,11 @@ public class User_Profile_Edit extends Activity {
                 Bitmap imgBitmap = BitmapFactory.decodeStream(instream);
 
                 switch (flag) {
-                    case BACKGROUND_IMAGE_CLICK :
+                    case AppConstants.BACKGROUND_IMAGE_CLICK :
                         userBackground.setImageBitmap(imgBitmap);
                         resultPhotoBitBack = imgBitmap;
                         break;
-                    case PROFILE_IMAGE_CLICK :
+                    case AppConstants.PROFILE_IMAGE_CLICK :
                         userProfile.setImageBitmap(imgBitmap);
                         resultPhotoBitProfile = imgBitmap;
                         break;
@@ -248,13 +245,13 @@ public class User_Profile_Edit extends Activity {
             if(items.get(0).user_profile_img.equals("")) {
                 userProfile.setImageResource(R.drawable.default_user_icon_11);
             }else{
-                setPicture(items.get(0).user_profile_img, 1, PROFILE_IMAGE_CLICK);
+                setPicture(items.get(0).user_profile_img, 1, AppConstants.PROFILE_IMAGE_CLICK);
             }
 
             if(items.get(0).user_profile_backimg.equals("")){
                 userBackground.setImageResource(R.drawable.mintcolor);
             }else{
-                setPicture(items.get(0).user_profile_backimg,1,BACKGROUND_IMAGE_CLICK);
+                setPicture(items.get(0).user_profile_backimg,1,AppConstants.BACKGROUND_IMAGE_CLICK);
 
             }
 
@@ -279,7 +276,7 @@ public class User_Profile_Edit extends Activity {
         options.inSampleSize = sampleSize;
 
         switch (flag){
-            case BACKGROUND_IMAGE_CLICK:
+            case AppConstants.BACKGROUND_IMAGE_CLICK:
                 try{
                     Bitmap bm = BitmapFactory.decodeFile(picturePath);
                     userBackground.setImageBitmap(bm);
@@ -287,7 +284,7 @@ public class User_Profile_Edit extends Activity {
                     e.printStackTrace();
                 }
                 break;
-            case PROFILE_IMAGE_CLICK:
+            case AppConstants.PROFILE_IMAGE_CLICK:
                 try{
                     Bitmap bm = BitmapFactory.decodeFile(picturePath);
                     userProfile.setImageBitmap(bm);
@@ -323,14 +320,14 @@ public class User_Profile_Edit extends Activity {
             if (picturePath_profile == null || picturePath_profile.equals("")) {
                 userProfile.setImageResource(R.drawable.default_user_icon_11);
             } else {
-                setPicture(item.getUser_profile_img(), 1,PROFILE_IMAGE_CLICK);
+                setPicture(item.getUser_profile_img(), 1,AppConstants.PROFILE_IMAGE_CLICK);
             }
             //background image
             String picturePath_back = item.getUser_profile_backimg();
             if (picturePath_back == null || picturePath_back.equals("")) {
                 userBackground.setImageResource(R.drawable.mintcolor);
             } else {
-                setPicture(item.getUser_profile_backimg(), 1,BACKGROUND_IMAGE_CLICK);
+                setPicture(item.getUser_profile_backimg(), 1,AppConstants.BACKGROUND_IMAGE_CLICK);
             }
 
         }else{//item은 존재하지 않고 처음 수정해서 저장만 하면 될 때.
@@ -345,57 +342,57 @@ public class User_Profile_Edit extends Activity {
 
     /**다른 액티비티로부터 응답 처리*/
 
-    public static Bitmap decodeSampledBitmapFromResource(File res, int reqWidth, int reqHeight) {
-
-        // First decode with inJustDecodeBounds=true to check dimensions
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(res.getAbsolutePath(),options);
-
-        // Calculate inSampleSize
-        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
-
-        // Decode bitmap with inSampleSize set
-        options.inJustDecodeBounds = false;
-
-        return BitmapFactory.decodeFile(res.getAbsolutePath(),options);
-    }
-
-    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        // Raw height and width of image
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth) {
-
-            final int halfHeight = height;
-            final int halfWidth = width;
-
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) >= reqHeight
-                    && (halfWidth / inSampleSize) >= reqWidth) {
-                inSampleSize *= 2;
-            }
-        }
-
-        return inSampleSize;
-    }
-
-
-    private String createFilename() {
-        String curDateStr = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-
-        return curDateStr;
-    }
+//    public static Bitmap decodeSampledBitmapFromResource(File res, int reqWidth, int reqHeight) {
+//
+//        // First decode with inJustDecodeBounds=true to check dimensions
+//        final BitmapFactory.Options options = new BitmapFactory.Options();
+//        options.inJustDecodeBounds = true;
+//        BitmapFactory.decodeFile(res.getAbsolutePath(),options);
+//
+//        // Calculate inSampleSize
+//        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+//
+//        // Decode bitmap with inSampleSize set
+//        options.inJustDecodeBounds = false;
+//
+//        return BitmapFactory.decodeFile(res.getAbsolutePath(),options);
+//    }
+//
+//    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+//        // Raw height and width of image
+//        final int height = options.outHeight;
+//        final int width = options.outWidth;
+//        int inSampleSize = 1;
+//
+//        if (height > reqHeight || width > reqWidth) {
+//
+//            final int halfHeight = height;
+//            final int halfWidth = width;
+//
+//            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+//            // height and width larger than the requested height and width.
+//            while ((halfHeight / inSampleSize) >= reqHeight
+//                    && (halfWidth / inSampleSize) >= reqWidth) {
+//                inSampleSize *= 2;
+//            }
+//        }
+//
+//        return inSampleSize;
+//    }
+//
+//
+//    private String createFilename() {
+//        String curDateStr = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+//
+//        return curDateStr;
+//    }
 
     private String savePicture(int flag) {
 
         String picturePath = null;
 
         switch (flag){
-            case BACKGROUND_IMAGE_CLICK :
+            case AppConstants.BACKGROUND_IMAGE_CLICK :
                 try{
                     File file = new File("back.png");
                     FileOutputStream fos = openFileOutput("back.png" , 0);
@@ -407,7 +404,7 @@ public class User_Profile_Edit extends Activity {
                 }
                 picturePath =  "/data/data/com.example.now.time_assistant/files/back.png";
                 break;
-            case PROFILE_IMAGE_CLICK :
+            case AppConstants.PROFILE_IMAGE_CLICK :
                 try{
                     File file = new File("profile.png");
                     FileOutputStream fos = openFileOutput("profile.png" , 0);
@@ -432,8 +429,8 @@ public class User_Profile_Edit extends Activity {
         String u_name = user_name.getText().toString();
         String u_nick = user_nickname.getText().toString();
 
-        String picture_profile_Path = savePicture(PROFILE_IMAGE_CLICK);
-        String picture_back_Path = savePicture(BACKGROUND_IMAGE_CLICK);
+        String picture_profile_Path = savePicture(AppConstants.PROFILE_IMAGE_CLICK);
+        String picture_back_Path = savePicture(AppConstants.BACKGROUND_IMAGE_CLICK);
 
     //data/data/com.example.now.time_assistant/files/파일이름
 

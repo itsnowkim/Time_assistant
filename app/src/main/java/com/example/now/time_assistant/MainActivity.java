@@ -1,6 +1,9 @@
 package com.example.now.time_assistant;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
@@ -33,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView pencil;
     TextView user_name;
     ImageView user_img;
+    ImageView user_back;
 
     private List<AppointmentData> list_apointment;
     private RecyclerView recyclerView;
@@ -45,13 +49,13 @@ public class MainActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         pencil = findViewById(R.id.pencil);
         user_name = findViewById(R.id.user_profile_name);
         user_img = findViewById(R.id.user_profile_image);
+        user_back = findViewById(R.id.user_background_image);
 
 
         /**프로필 이미지 둥글게
@@ -76,12 +80,10 @@ public class MainActivity extends AppCompatActivity {
          **/
 
         //화면 오른쪽 밑에 떠 있는 fab에 대한 내용
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*Snackbar.make(view, "새로운 약속(방 파는거) 만들어야 함 - 노트 2번 페이지", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();*/
                 Intent intent = new Intent(MainActivity.this,Make_room.class);
                 startActivity(intent);
 
@@ -97,10 +99,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-        setPicturePath();
-
         openDatabase();
+        loadDatabase();
     }
 
     //밑의 리스트 데이터 받고,
@@ -171,9 +171,84 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void setPicturePath() {
-        String sdcardPath = Environment.getExternalStorageDirectory().getAbsolutePath();
-        AppConstants.FOLDER_PHOTO_PROFILE = sdcardPath + File.separator + "photo";
+    public void setPicture(String picturePath, int sampleSize,int flag) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = sampleSize;
+
+        switch (flag){
+            case AppConstants.BACKGROUND_IMAGE_CLICK:
+                try{
+                    Bitmap bm = BitmapFactory.decodeFile(picturePath);
+                    user_back.setImageBitmap(bm);
+                }catch(Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+            case AppConstants.PROFILE_IMAGE_CLICK:
+                try{
+                    Bitmap bm = BitmapFactory.decodeFile(picturePath);
+                    user_img.setImageBitmap(bm);
+                }catch(Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+        }
+    }
+
+    public void loadDatabase(){
+        String sql = "select USER_NAME, USER_NICKNAME, PICTURE_PROFILE, PICTURE_BACK, USER_EMAIL, USER_PHONENUM from " + ProfileDatabase.TABLE_PROFILE;
+
+        int recordCount = -1;
+        ProfileDatabase database = ProfileDatabase.getInstance(this);
+
+        if (database != null) {
+            Cursor outCursor = database.rawQuery(sql);
+            recordCount = outCursor.getCount();
+
+            //처음 실행시켰을 경우에만 default 값 넣어줌.
+            if(recordCount == 0){
+                database.execSQL("insert into " + ProfileDatabase.TABLE_PROFILE
+                        + "(USER_NAME,USER_NICKNAME,PICTURE_PROFILE,PICTURE_BACK,USER_EMAIL,USER_PHONENUM)"
+                        + " values "
+                        + "('이름','닉네임','','','useremail@eail.com','010-1234-5678')");
+                outCursor = database.rawQuery(sql);
+                recordCount++;
+            }
+
+            ArrayList<ProfileData> items = new ArrayList();
+
+            for (int i = 0; i < recordCount; i++) {
+                outCursor.moveToNext();
+
+                String user_name = outCursor.getString(0);
+                String user_nickname = outCursor.getString(1);
+                String picture_profile = outCursor.getString(2);
+                String picture_back = outCursor.getString(3);
+                String email = outCursor.getString(4);
+                String phone_num = outCursor.getString(5);
+
+                items.add(new ProfileData(user_name, user_nickname, picture_profile, picture_back, email, phone_num));
+            }
+
+            outCursor.close();
+
+            /****/
+            user_name.setText(items.get(0).user_name);
+
+            if(items.get(0).user_profile_img.equals("")) {
+                user_img.setImageResource(R.drawable.default_user_icon_11);
+            }else{
+                setPicture(items.get(0).user_profile_img, 1, AppConstants.PROFILE_IMAGE_CLICK);
+            }
+
+            if(items.get(0).user_profile_backimg.equals("")){
+                user_back.setImageResource(R.drawable.mintcolor);
+            }else{
+                setPicture(items.get(0).user_profile_backimg,1,AppConstants.BACKGROUND_IMAGE_CLICK);
+            }
+
+            /****/
+        }
     }
 
 
