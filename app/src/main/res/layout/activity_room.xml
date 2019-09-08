@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Room">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".Room"
+    android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+        android:id="@+id/customized_calender_2"
+
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="100dp"
-        android:text="방 파지면 여기다가 만들자"
-        />
-
+        app:mcv_showOtherDates="all"
+        app:mcv_selectionColor="@color/colorMint"
+        >
+    </com.prolificinteractive.materialcalendarview.MaterialCalendarView>
 </LinearLayout>
