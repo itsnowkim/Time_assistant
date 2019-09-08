@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:orientation="vertical"
-    android:background="#dddddd">
+    android:layout_width="match_parent"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity"
+        android:orientation="vertical"
+        android:background="#dddddd">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,6 +25,7 @@
             android:textSize="20dp"
             android:textStyle="bold"/>
     </LinearLayout>
+
     <TableLayout
         android:background="#000000"
         android:padding="1dp"
@@ -47,11 +54,26 @@
                 android:text="일"/>
         </TableRow>
     </TableLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:background="#dddddd">
+        android:background="#dddddd"
+        android:orientation="horizontal">
+
+        <GridView
+            android:id="@+id/gridView"
+
+            android:layout_width="match_parent"
+            android:layout_height="536dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:background="#dddddd"
+            android:horizontalSpacing="1dp"
+            android:listSelector="#bbbb00"
+            android:numColumns="7"
+            android:verticalSpacing="1dp" />
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -60,88 +82,135 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="61dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="9"
-                    />
+                    android:text="9" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="61dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="10"
-                    />
+                    android:text="10" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="61dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="11"
-                    />
+                    android:text="11" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="61dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="12"
-                    />
+                    android:text="12" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="61dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="13"
-                    />
+                    android:text="13" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="61dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="14"
-                    />
+                    android:text="14" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="61dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="15"
-                    />
+                    android:text="15" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="61dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="16"
-                    />
+                    android:text="16" />
             </LinearLayout>
         </LinearLayout>
 
-        <GridView
-            android:id="@+id/gridView"
-
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            android:background="#dddddd"
-            android:horizontalSpacing="1dp"
-            android:listSelector="#bbbb00"
-            android:numColumns="7"
-            android:verticalSpacing="1dp" />
     </LinearLayout>
-</LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="시작 시간 추가"
+            android:textSize="20dp"
+            />
+        <TimePicker
+            android:id="@+id/start_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:timePickerMode="spinner"
+            android:layout_marginBottom="30dp"
+            />
+
+    </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="종료 시간 추가"
+                android:textSize="20dp"
+                />
+            <TimePicker
+                android:id="@+id/end_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:timePickerMode="spinner"
+                android:layout_marginBottom="30dp"
+                />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/time_setted_ok"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="시간 설정 완료"
+            android:textSize="20dp"
+            />
+
+    </LinearLayout>
+
+</ScrollView>
