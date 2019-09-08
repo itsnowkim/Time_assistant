@@ -36,7 +36,7 @@
                 android:layout_height="30dp"
                 android:layout_alignParentBottom="true"
 
-                android:textSize="20sp"
+                android:textSize="20dp"
                 android:layout_marginLeft="35dp"
                 android:layout_marginBottom="0dp"
                 android:gravity="center_vertical"
@@ -50,7 +50,7 @@
                 android:layout_above="@+id/list_content_term"
                 android:layout_alignStart="@+id/list_content_term"
                 android:text="약속 기간"
-                android:textSize="20sp"
+                android:textSize="20dp"
                 android:layout_alignLeft="@+id/list_content_term" />
 
 
@@ -67,7 +67,7 @@
                 android:layout_marginRight="55dp"
                 android:layout_marginBottom="43dp"
                 android:text="2019/8/21 - 2019/8/28"
-                android:textSize="20sp" />
+                android:textSize="20dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -81,7 +81,7 @@
                 android:layout_marginLeft="129dp"
                 android:layout_marginBottom="0dp"
                 android:text="만든 날짜  - "
-                android:textSize="20sp" />
+                android:textSize="20dp" />
 
             <TextView
                 android:id="@+id/list_content_created_date"
@@ -93,7 +93,7 @@
                 android:layout_alignRight="@+id/list_content_term"
                 android:layout_alignParentBottom="true"
                 android:text="2019/8/21"
-                android:textSize="20sp" />
+                android:textSize="20dp" />
 
         </RelativeLayout>
 
