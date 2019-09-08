@@ -1,5 +1,6 @@
 package com.example.now.time_assistant;
 
+import android.annotation.SuppressLint;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -8,9 +9,13 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.NumberPicker;
 import android.widget.TimePicker;
 
+import java.lang.reflect.Field;
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.List;
 
 public class SetPossibleTime extends AppCompatActivity {
 
@@ -20,9 +25,9 @@ public class SetPossibleTime extends AppCompatActivity {
     TimePicker startTime;
     TimePicker endTime;
 
-
-
-
+    private int TIME_PICKER_INTERVAL = 30;
+    NumberPicker minutePicker;
+    List<String> displayedValues;
 
     /**
      * 해야하는 것 :
@@ -77,7 +82,46 @@ public class SetPossibleTime extends AppCompatActivity {
         //end
         endTime = findViewById(R.id.end_time);
 
+        //TimePicker
+        startTime.setIs24HourView(true);
+        startTime.setCurrentHour(0);
+        startTime.setCurrentMinute(0);
+
+        setTimePickerInterval(startTime);
+
+        endTime.setIs24HourView(true);
+        endTime.setCurrentHour(0);
+        endTime.setCurrentMinute(0);
+
+        setTimePickerInterval(endTime);
+
     }
+    @SuppressLint("NewApi")
+    private void setTimePickerInterval(TimePicker timePicker) {
+        try {
+            Class<?> classForid = Class.forName("com.android.internal.R$id");
+
+            Field field = classForid.getField("minute");
+            minutePicker =  timePicker
+                    .findViewById(field.getInt(null));
+
+            minutePicker.setMinValue(0);
+            minutePicker.setMaxValue(1);
+            displayedValues = new ArrayList<String>();
+            for (int i = 0; i < 60; i += TIME_PICKER_INTERVAL) {
+                displayedValues.add(String.format("%02d", i));
+            }
+            //  for (int i = 0; i < 60; i += TIME_PICKER_INTERVAL) {
+            //      displayedValues.add(String.format("%02d", i));
+            //  }
+            minutePicker.setDisplayedValues(displayedValues
+                    .toArray(new String[0]));
+            minutePicker.setWrapSelectorWheel(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     class SingerAdapter extends BaseAdapter {
         ArrayList<TimeCell> items = new ArrayList();
