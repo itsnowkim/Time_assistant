@@ -1,6 +1,5 @@
 package com.example.now.time_assistant;
 
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -14,19 +13,16 @@ import android.os.Build;
 import android.os.Bundle;
 import android.app.Activity;
 import android.provider.MediaStore;
-import android.support.v4.content.FileProvider;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 
-import com.gun0912.tedpermission.TedPermission;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 public class User_Profile_Edit extends Activity {
@@ -213,6 +209,7 @@ public class User_Profile_Edit extends Activity {
 //                e.printStackTrace();
 //            }
 //
+
             Bitmap imgBitmap = sendPicture(data.getData());
             switch (flag){
                 case AppConstants.BACKGROUND_IMAGE_CLICK :

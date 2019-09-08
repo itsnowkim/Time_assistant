@@ -18,6 +18,7 @@
         <ImageView
             android:id="@+id/user_background_image"
 
+            android:scaleType="centerCrop"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
@@ -43,6 +44,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="71dp"
             android:background="@drawable/round"
+            android:scaleType="centerCrop"
             />
 
         <TextView
@@ -55,7 +57,9 @@
             android:layout_marginBottom="30dp"
             android:gravity="center_vertical"
 
-            android:background="@drawable/round"
+            android:textColor="#ffffff"
+
+            android:textStyle="bold"
 
             android:text="Name" />
 
