@@ -67,6 +67,7 @@
                 <ImageView
                     android:id="@+id/user_background_image_edit"
 
+                    android:scaleType="centerCrop"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_alignParentStart="true"
@@ -74,6 +75,7 @@
                     android:layout_alignParentLeft="true" />
 
                 <ImageView
+                    android:scaleType="centerCrop"
                     android:id="@+id/user_profile_image_edit"
 
                     android:layout_width="150dp"
@@ -167,6 +169,8 @@
                         />
 
                     <TextView
+                        android:id="@+id/user_email"
+
                         android:layout_gravity="bottom"
                         android:gravity="center_vertical"
                         android:layout_width="match_parent"
@@ -193,6 +197,7 @@
                         />
 
                     <TextView
+                        android:id="@+id/user_phone"
                         android:layout_gravity="bottom"
                         android:gravity="center_vertical"
                         android:layout_width="match_parent"

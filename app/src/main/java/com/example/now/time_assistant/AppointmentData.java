@@ -9,7 +9,6 @@ public class AppointmentData {
     //승우한테 물어보고 다시 바꾸자
     String date_start_end;
     //
-
     String appointment_time;
 
     /*public AppointmentData(String appointment_name, String appointment_img, String appointment_date_created,
