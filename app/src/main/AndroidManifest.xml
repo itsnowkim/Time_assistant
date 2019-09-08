@@ -32,6 +32,7 @@
             android:name=".Edit_Profile_popup"
             android:theme="@style/popup" />
         <activity android:name=".Room"></activity>
+
     </application>
 
 </manifest>

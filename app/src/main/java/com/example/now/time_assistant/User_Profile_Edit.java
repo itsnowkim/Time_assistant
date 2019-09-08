@@ -1,39 +1,33 @@
 package com.example.now.time_assistant;
 
 import android.content.ContentResolver;
-import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
-import android.media.Image;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.app.Activity;
-import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
+import android.support.v4.content.FileProvider;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
-import org.w3c.dom.Text;
+
+import com.gun0912.tedpermission.TedPermission;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class User_Profile_Edit extends Activity {
 
@@ -54,7 +48,9 @@ public class User_Profile_Edit extends Activity {
     ProfileData item;
     Bitmap resultPhotoBitBack;
     Bitmap resultPhotoBitProfile;
-    File file;
+
+    Boolean is_Profile_changed = false;
+    Boolean is_Back_changed = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +68,58 @@ public class User_Profile_Edit extends Activity {
         //초기 값 설정
         applyItem();
     }
+
+    private int exifOrientationToDegrees(int exifOrientation) {
+        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) {
+            return 90;
+        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {
+            return 180;
+        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {
+            return 270;
+        }
+        return 0;
+    }
+
+    private Bitmap rotate(Bitmap src, float degree) {
+
+        // Matrix 객체 생성
+        Matrix matrix = new Matrix();
+        // 회전 각도 셋팅
+        matrix.postRotate(degree);
+        // 이미지와 Matrix 를 셋팅해서 Bitmap 객체 생성
+        return Bitmap.createBitmap(src, 0, 0, src.getWidth(),
+                src.getHeight(), matrix, true);
+    }
+
+    private String getRealPathFromURI(Uri contentUri) {
+        int column_index=0;
+        String[] proj = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getContentResolver().query(contentUri, proj, null, null, null);
+        if(cursor.moveToFirst()){
+            column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        }
+
+        return cursor.getString(column_index);
+    }
+
+    private Bitmap sendPicture(Uri imgUri) {
+
+        String imagePath = getRealPathFromURI(imgUri); // path 경로
+        ExifInterface exif = null;
+        try {
+            exif = new ExifInterface(imagePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        int exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+        int exifDegree = exifOrientationToDegrees(exifOrientation);
+
+        Bitmap bitmap = BitmapFactory.decodeFile(imagePath);//경로를 통해 비트맵으로 전환
+        bitmap = rotate(bitmap, exifDegree);//이미지 뷰에 비트맵 넣기
+
+        return bitmap;
+    }
+
 
     private void initUI(){
 
@@ -131,13 +179,8 @@ public class User_Profile_Edit extends Activity {
     }
 
 
-    public void openGallery() {
-//        Intent intent = new Intent();
-//        intent.setType("image/*");
-//        intent.setAction(Intent.ACTION_GET_CONTENT);
-//
-//        startActivityForResult(intent, 1);
 
+    public void openGallery() {
         Intent intent = new Intent(Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, 1);
@@ -146,58 +189,47 @@ public class User_Profile_Edit extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == RESULT_OK) {
-
-            Uri fileUri = data.getData();
-
-            ContentResolver resolver = getContentResolver();
-
-            try {
-                InputStream instream = resolver.openInputStream(fileUri);
-
-                Bitmap imgBitmap = BitmapFactory.decodeStream(instream);
-
-                switch (flag) {
-                    case AppConstants.BACKGROUND_IMAGE_CLICK :
-                        userBackground.setImageBitmap(imgBitmap);
-                        resultPhotoBitBack = imgBitmap;
-                        break;
-                    case AppConstants.PROFILE_IMAGE_CLICK :
-                        userProfile.setImageBitmap(imgBitmap);
-                        resultPhotoBitProfile = imgBitmap;
-                        break;
-                }
-
-                instream.close();
-            } catch(Exception e) {
-                e.printStackTrace();
-            }
-
-//            //경로를 저장하는 방법
-//            Uri selectedImage = data.getData();
-//            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+//            Bitmap imgBitmap = null;
+//            Uri fileUri = data.getData();
+//            ContentResolver resolver = getContentResolver();
 //
-//            Cursor cursor = this.getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-//            cursor.moveToFirst();
-//
-//            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-//            String filePath = cursor.getString(columnIndex);
-//            cursor.close();
-//
-//            switch(flag) {
-//                case BACKGROUND_IMAGE_CLICK :
-//                    resultPhotoBitBack = decodeSampledBitmapFromResource(new File(filePath), userBackground.getWidth(), userBackground.getHeight());
-//                    userBackground.setImageBitmap(resultPhotoBitBack);
-//                    break;
-//
-//                case PROFILE_IMAGE_CLICK :
-//                    resultPhotoBitProfile = decodeSampledBitmapFromResource(new File(filePath), userProfile.getWidth(), userProfile.getHeight());
-//                    userBackground.setImageBitmap(resultPhotoBitProfile);
-//                    break;
+//            try {
+//                InputStream instream = resolver.openInputStream(fileUri);
+//                imgBitmap = BitmapFactory.decodeStream(instream);
+//                switch (flag) {
+//                    case AppConstants.BACKGROUND_IMAGE_CLICK :
+//                        userBackground.setImageBitmap(imgBitmap);
+//                        resultPhotoBitBack = imgBitmap;
+//                        is_Back_changed = true;
+//                        break;
+//                    case AppConstants.PROFILE_IMAGE_CLICK :
+//                        userProfile.setImageBitmap(imgBitmap);
+//                        resultPhotoBitProfile = imgBitmap;
+//                        is_Profile_changed = true;
+//                        break;
+//                }
+//                instream.close();
+//            } catch(Exception e) {
+//                e.printStackTrace();
 //            }
-
+//
+            Bitmap imgBitmap = sendPicture(data.getData());
+            switch (flag){
+                case AppConstants.BACKGROUND_IMAGE_CLICK :
+                    userBackground.setImageBitmap(imgBitmap);
+                    resultPhotoBitBack = imgBitmap;
+                    is_Back_changed = true;
+                    break;
+                case AppConstants.PROFILE_IMAGE_CLICK :
+                    userProfile.setImageBitmap(imgBitmap);
+                    resultPhotoBitProfile = imgBitmap;
+                    is_Profile_changed = true;
+                    break;
+            }
         }
 
     }
+
 
     public int loadProfileData(){
         String sql = "select USER_NAME, USER_NICKNAME, PICTURE_PROFILE, PICTURE_BACK, USER_EMAIL, USER_PHONENUM from " + ProfileDatabase.TABLE_PROFILE;
@@ -237,25 +269,6 @@ public class User_Profile_Edit extends Activity {
             }
 
             outCursor.close();
-
-            /****/
-            user_name.setText(items.get(0).user_name);
-            user_nickname.setText(items.get(0).user_nickname);
-
-            if(items.get(0).user_profile_img.equals("")) {
-                userProfile.setImageResource(R.drawable.default_user_icon_11);
-            }else{
-                setPicture(items.get(0).user_profile_img, 1, AppConstants.PROFILE_IMAGE_CLICK);
-            }
-
-            if(items.get(0).user_profile_backimg.equals("")){
-                userBackground.setImageResource(R.drawable.mintcolor);
-            }else{
-                setPicture(items.get(0).user_profile_backimg,1,AppConstants.BACKGROUND_IMAGE_CLICK);
-
-            }
-
-            /****/
 
             user_email.setText(items.get(0).user_email);
             user_phone.setText(items.get(0).user_phonenum);
@@ -339,53 +352,7 @@ public class User_Profile_Edit extends Activity {
 
     }
 
-
     /**다른 액티비티로부터 응답 처리*/
-
-//    public static Bitmap decodeSampledBitmapFromResource(File res, int reqWidth, int reqHeight) {
-//
-//        // First decode with inJustDecodeBounds=true to check dimensions
-//        final BitmapFactory.Options options = new BitmapFactory.Options();
-//        options.inJustDecodeBounds = true;
-//        BitmapFactory.decodeFile(res.getAbsolutePath(),options);
-//
-//        // Calculate inSampleSize
-//        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
-//
-//        // Decode bitmap with inSampleSize set
-//        options.inJustDecodeBounds = false;
-//
-//        return BitmapFactory.decodeFile(res.getAbsolutePath(),options);
-//    }
-//
-//    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-//        // Raw height and width of image
-//        final int height = options.outHeight;
-//        final int width = options.outWidth;
-//        int inSampleSize = 1;
-//
-//        if (height > reqHeight || width > reqWidth) {
-//
-//            final int halfHeight = height;
-//            final int halfWidth = width;
-//
-//            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-//            // height and width larger than the requested height and width.
-//            while ((halfHeight / inSampleSize) >= reqHeight
-//                    && (halfWidth / inSampleSize) >= reqWidth) {
-//                inSampleSize *= 2;
-//            }
-//        }
-//
-//        return inSampleSize;
-//    }
-//
-//
-//    private String createFilename() {
-//        String curDateStr = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-//
-//        return curDateStr;
-//    }
 
     private String savePicture(int flag) {
 
@@ -425,29 +392,31 @@ public class User_Profile_Edit extends Activity {
      * 데이터베이스 레코드 수정
      */
 
+    //달라진 것만 업데이트 하면 됨.
     private void saveProfile() {
         String u_name = user_name.getText().toString();
         String u_nick = user_nickname.getText().toString();
 
-        String picture_profile_Path = savePicture(AppConstants.PROFILE_IMAGE_CLICK);
-        String picture_back_Path = savePicture(AppConstants.BACKGROUND_IMAGE_CLICK);
-
-    //data/data/com.example.now.time_assistant/files/파일이름
-
         String sql = "update " + ProfileDatabase.TABLE_PROFILE +
                 " set " +
                 "USER_NAME = '" + u_name + "'" +
-                ",USER_NICKNAME = '" + u_nick +"'" +
-                ",PICTURE_PROFILE = '" + picture_profile_Path + "'" +
-                ",PICTURE_BACK = '" + picture_back_Path + "'";
+                ",USER_NICKNAME = '" + u_nick +"'";
 
+        if(is_Profile_changed){
+            String picture_profile_Path = savePicture(AppConstants.PROFILE_IMAGE_CLICK);
+            sql = sql + ",PICTURE_PROFILE = '" + picture_profile_Path + "'";
+        }
+        if(is_Back_changed) {
+            String picture_back_Path = savePicture(AppConstants.BACKGROUND_IMAGE_CLICK);
+            sql = sql + ",PICTURE_BACK = '" + picture_back_Path + "'";
+
+        }
 
         ProfileDatabase database = ProfileDatabase.getInstance(this);
         database.execSQL(sql);
 
         //저장 후 밖으로 나감
-        onBackPressed();
+        finish();
     }
-
 
 }

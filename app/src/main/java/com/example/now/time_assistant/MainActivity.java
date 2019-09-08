@@ -10,6 +10,7 @@ import android.graphics.drawable.shapes.OvalShape;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -95,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this,User_Profile_Edit.class);
-                startActivity(intent);
+                startActivityForResult(intent,1000);
             }
         });
 
@@ -143,6 +144,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+            if(requestCode == 1000){
+                loadDatabase();
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
 
@@ -178,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
         switch (flag){
             case AppConstants.BACKGROUND_IMAGE_CLICK:
                 try{
-                    Bitmap bm = BitmapFactory.decodeFile(picturePath);
+                    Bitmap bm = BitmapFactory.decodeFile(picturePath,options);
                     user_back.setImageBitmap(bm);
                 }catch(Exception e) {
                     e.printStackTrace();
@@ -186,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case AppConstants.PROFILE_IMAGE_CLICK:
                 try{
-                    Bitmap bm = BitmapFactory.decodeFile(picturePath);
+                    Bitmap bm = BitmapFactory.decodeFile(picturePath,options);
                     user_img.setImageBitmap(bm);
                 }catch(Exception e) {
                     e.printStackTrace();
@@ -235,13 +244,13 @@ public class MainActivity extends AppCompatActivity {
             /****/
             user_name.setText(items.get(0).user_name);
 
-            if(items.get(0).user_profile_img.equals("")) {
+            if(items.get(0).user_profile_img.equals(AppConstants.DEFAULT_IMG)) {
                 user_img.setImageResource(R.drawable.default_user_icon_11);
             }else{
                 setPicture(items.get(0).user_profile_img, 1, AppConstants.PROFILE_IMAGE_CLICK);
             }
 
-            if(items.get(0).user_profile_backimg.equals("")){
+            if(items.get(0).user_profile_backimg.equals(AppConstants.DEFAULT_BACK)){
                 user_back.setImageResource(R.drawable.mintcolor);
             }else{
                 setPicture(items.get(0).user_profile_backimg,1,AppConstants.BACKGROUND_IMAGE_CLICK);
