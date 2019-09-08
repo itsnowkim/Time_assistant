@@ -29,7 +29,7 @@ public class Room extends AppCompatActivity {
         setContentView(R.layout.activity_room);
 
         //calender id 가져오기
-        materialCalendarView = findViewById(R.id.customized_calender_2);
+        materialCalendarView = findViewById(R.id.calender_after_created);
 
         Intent intent = getIntent();
 

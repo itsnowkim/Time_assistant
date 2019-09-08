@@ -1,7 +1,6 @@
 package com.example.now.time_assistant;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,29 +11,23 @@ import android.widget.Button;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 import com.prolificinteractive.materialcalendarview.OnRangeSelectedListener;
 
 import java.util.Calendar;
 import java.util.List;
 
-import static com.prolificinteractive.materialcalendarview.MaterialCalendarView.SELECTION_MODE_MULTIPLE;
 import static com.prolificinteractive.materialcalendarview.MaterialCalendarView.SELECTION_MODE_RANGE;
 
 public class Make_room extends AppCompatActivity {
 
-    String time,kcal,menu;
     private final OneDayDecorator oneDayDecorator = new OneDayDecorator();
-    Cursor cursor;
     MaterialCalendarView materialCalendarView;
 
     //버튼 활성화를 위한 멤버 추가
     Button ok_btn, back_btn;
-    CalendarDay first_day = null;
-    CalendarDay last_day = null;
-    CalendarDay temp;
-    String PrevFirstDay = null;
-    String PrevLastDay = null;
-
+    String First = "";
+    String Last = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,9 +49,6 @@ public class Make_room extends AppCompatActivity {
                 new SaturdayDecorator(),
                 oneDayDecorator);
 
-
-
-
         materialCalendarView.setSelectionMode(SELECTION_MODE_RANGE);
 
         //Ok 버튼 활성화 기능 설정
@@ -66,43 +56,38 @@ public class Make_room extends AppCompatActivity {
         ok_btn.setClickable(false);
         ok_btn.setEnabled(false);
 
-        List<CalendarDay> selectedDates = materialCalendarView.getSelectedDates();
-        int lastIndex = selectedDates.lastIndexOf(selectedDates);
-
-        Log.v("INDEXSEARCH", "last indext is"+ lastIndex);
-
+        //Back 버튼
+        back_btn = findViewById(R.id.back_btn);
+        back_btn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         materialCalendarView.setOnRangeSelectedListener(new OnRangeSelectedListener() {
             @Override
             public void onRangeSelected(@NonNull MaterialCalendarView widget, @NonNull List<CalendarDay> dates) {
                 ok_btn.setClickable(false);
                 ok_btn.setEnabled(false);
+
                 final String FirstDay = String.valueOf(dates.get(0));
                 final String LastDay = String.valueOf(dates.get(dates.size()-1));
 
+                First = FirstDay;
+                Last = LastDay;
+
+                if(!First.equals("")&& !Last.equals("")){
+                    ok_btn.setClickable(true);
+                    ok_btn.setEnabled(true);
+                }
+
                 final Integer FirstDay_Y = Integer.valueOf(dates.get(0).getYear());
-                final Integer FirstDay_M = Integer.valueOf(dates.get(0).getMonth());;
-                final Integer FirstDay_D = Integer.valueOf(dates.get(0).getDay());;
+                final Integer FirstDay_M = Integer.valueOf(dates.get(0).getMonth());
+                final Integer FirstDay_D = Integer.valueOf(dates.get(0).getDay());
                 final Integer LastDay_Y = Integer.valueOf(dates.get(dates.size()-1).getYear());
                 final Integer LastDay_M = Integer.valueOf(dates.get(dates.size()-1).getMonth());
                 final Integer LastDay_D = Integer.valueOf(dates.get(dates.size()-1).getDay());
-
-                if((PrevFirstDay == null) && (PrevLastDay == null)) {
-                    PrevFirstDay = FirstDay;
-                    PrevLastDay = LastDay;
-                    ok_btn.setClickable(true);
-                    ok_btn.setEnabled(true);
-                }
-                else if((PrevFirstDay != FirstDay) && (PrevLastDay == LastDay)||(PrevFirstDay == FirstDay) && (PrevLastDay != LastDay)){
-                    ok_btn.setClickable(false);
-                    ok_btn.setEnabled(false);
-                }
-                else if((PrevFirstDay != FirstDay) && (PrevLastDay != LastDay)){
-                    PrevFirstDay = FirstDay;
-                    PrevLastDay = LastDay;
-                    ok_btn.setClickable(true);
-                    ok_btn.setEnabled(true);
-                }
 
                 ok_btn.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -125,14 +110,22 @@ public class Make_room extends AppCompatActivity {
             }
         });
 
-
-        //Back 버튼
-        back_btn = findViewById(R.id.back_btn);
-        back_btn.setOnClickListener(new View.OnClickListener(){
+        materialCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
-            public void onClick(View v) {
-                onBackPressed();
+            public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected){
+                final String temp = String.valueOf(date);
+                check(temp);
             }
         });
     }
+
+    public void check(String temp){
+        if( !temp.equals(First) || !temp.equals(Last)){
+            First = "";
+            Last = "";
+            ok_btn.setClickable(false);
+            ok_btn.setEnabled(false);
+        }
+    }
+
 }

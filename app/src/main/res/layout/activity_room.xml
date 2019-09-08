@@ -8,7 +8,7 @@
     android:orientation="vertical">
 
     <com.prolificinteractive.materialcalendarview.MaterialCalendarView
-        android:id="@+id/customized_calender_2"
+        android:id="@+id/calender_after_created"
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

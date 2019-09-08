@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.os.Build;
@@ -13,22 +12,15 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,57 +38,6 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager;
     int list_apointment_index = 5;
     public static ProfileDatabase mDatabase = null;
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable final Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1000) {
-            if (resultCode == RESULT_OK) {
-                final String firstday = data.getExtras().getString("FirstDay");
-                final String lastday = data.getExtras().getString("LastDay");
-                Toast.makeText(MainActivity.this, "Day:" + firstday + " and " + lastday, Toast.LENGTH_SHORT).show();
-
-
-                AppointmentData appointData = new AppointmentData();
-                appointData.setAppointment_date_created("2019/08/22");
-                appointData.setAppointment_img("for test");
-                appointData.setAppointment_name("약속 "+ list_apointment_index);
-                list_apointment_index++;
-                appointData.setAppointment_time("00:00~15:00");
-                appointData.setDate_start_end(firstday + "," + lastday);
-
-                list_apointment.add(appointData);
-
-                mAdapter = new AppointmentAdapter(list_apointment, MainActivity.this, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Object obj = v.getTag();
-                        if(obj != null){
-                            int position = (int)obj;
-                            ((AppointmentAdapter)mAdapter).getAppointment(position);
-
-
-                            /**FirstDay & LastDay를 intent로 넘겨주어야함**/
-                            Intent intent = new Intent(MainActivity.this,Room.class);
-
-                            intent.putExtra("FirstDay", firstday);
-                            intent.putExtra("LastDay", lastday);
-                            intent.putExtra("FirstDay_Year", data.getExtras().getInt("FirstDay_Year"));
-                            intent.putExtra("FirstDay_Month", data.getExtras().getInt("FirstDay_Month"));
-                            intent.putExtra("FirstDay_Date", data.getExtras().getInt("FirstDay_Date"));
-                            intent.putExtra("LastDay_Year", data.getExtras().getInt("LastDay_Year"));
-                            intent.putExtra("LastDay_Month", data.getExtras().getInt("LastDay_Month"));
-                            intent.putExtra("LastDay_Date", data.getExtras().getInt("LastDay_Date"));
-
-                            // intent.setPackage("com.android.chrome");   // 브라우저가 여러개 인 경우 콕 찍어서 크롬을 지정할 경우
-                            startActivity(intent);
-                        }else{          }
-                    }
-                });
-                recyclerView.setAdapter(mAdapter);
-            }
-        }
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
@@ -136,25 +77,74 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*Snackbar.make(view, "새로운 약속(방 파는거) 만들어야 함 - 노트 2번 페이지", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();*/
                 Intent intent = new Intent(MainActivity.this, Make_room.class);
                 startActivityForResult(intent, 1000);
-
             }
         });
-
 
         pencil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this,User_Profile_Edit.class);
-                startActivityForResult(intent,1000);
+                startActivityForResult(intent,2000);
             }
         });
 
         openDatabase();
         loadDatabase();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1000) {
+            final String firstday = data.getExtras().getString("FirstDay");
+            final String lastday = data.getExtras().getString("LastDay");
+            Toast.makeText(MainActivity.this, "Day:" + firstday + " and " + lastday, Toast.LENGTH_SHORT).show();
+
+
+            AppointmentData appointData = new AppointmentData();
+            appointData.setAppointment_date_created("2019/08/22");
+            appointData.setAppointment_img("for test");
+            appointData.setAppointment_name("약속 "+ list_apointment_index);
+            list_apointment_index++;
+            appointData.setAppointment_time("00:00~15:00");
+            appointData.setDate_start_end(firstday + "," + lastday);
+
+            list_apointment.add(appointData);
+
+            mAdapter = new AppointmentAdapter(list_apointment, MainActivity.this, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Object obj = v.getTag();
+                    if(obj != null){
+                        int position = (int)obj;
+                        ((AppointmentAdapter)mAdapter).getAppointment(position);
+
+
+                        /**FirstDay & LastDay를 intent로 넘겨주어야함**/
+                        Intent intent = new Intent(MainActivity.this,Room.class);
+
+                        intent.putExtra("FirstDay", firstday);
+                        intent.putExtra("LastDay", lastday);
+                        intent.putExtra("FirstDay_Year", data.getExtras().getInt("FirstDay_Year"));
+                        intent.putExtra("FirstDay_Month", data.getExtras().getInt("FirstDay_Month"));
+                        intent.putExtra("FirstDay_Date", data.getExtras().getInt("FirstDay_Date"));
+                        intent.putExtra("LastDay_Year", data.getExtras().getInt("LastDay_Year"));
+                        intent.putExtra("LastDay_Month", data.getExtras().getInt("LastDay_Month"));
+                        intent.putExtra("LastDay_Date", data.getExtras().getInt("LastDay_Date"));
+
+                        // intent.setPackage("com.android.chrome");   // 브라우저가 여러개 인 경우 콕 찍어서 크롬을 지정할 경우
+                        startActivity(intent);
+                    }else{          }
+                }
+            });
+            recyclerView.setAdapter(mAdapter);
+        }
+
+        if(requestCode == 2000){
+            loadDatabase();
+        }
     }
 
     //밑의 리스트 데이터 받고,
@@ -199,13 +189,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-            if(requestCode == 1000){
-                loadDatabase();
-        }
-    }
 
     @Override
     protected void onDestroy() {
