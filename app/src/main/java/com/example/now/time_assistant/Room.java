@@ -3,8 +3,11 @@ package com.example.now.time_assistant;
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
@@ -18,16 +21,21 @@ import static com.prolificinteractive.materialcalendarview.MaterialCalendarView.
 
 public class Room extends AppCompatActivity {
 
-    String time,kcal,menu;
     private final OneDayDecorator oneDayDecorator = new OneDayDecorator();
-    Cursor cursor;
     MaterialCalendarView materialCalendarView;
+    Button timeplus;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
 
+        init();
+
+    }
+
+    public void init(){
         //calender id 가져오기
         materialCalendarView = findViewById(R.id.calender_after_created);
 
@@ -55,11 +63,34 @@ public class Room extends AppCompatActivity {
 
         materialCalendarView.setSelectionMode(MaterialCalendarView.SELECTION_MODE_SINGLE);
 
+        timeplus = findViewById(R.id.time_plus);
+        timeplus.setClickable(false);
+        timeplus.setEnabled(false);
+        timeplus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Room.this, SetPossibleTime.class);
+                //putextra
+                startActivityForResult(intent, 1253);
+            }
+        });
+
         materialCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
-
+                timeplus.setClickable(true);
+                timeplus.setEnabled(true);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK){
+            if(requestCode == 1253){
+                //성공!
+            }
+        }
     }
 }

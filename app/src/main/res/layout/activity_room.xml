@@ -16,4 +16,12 @@
         app:mcv_selectionColor="@color/colorMint"
         >
     </com.prolificinteractive.materialcalendarview.MaterialCalendarView>
+
+    <Button
+        android:id="@+id/time_plus"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:text="@string/plustime"/>
+
+
 </LinearLayout>

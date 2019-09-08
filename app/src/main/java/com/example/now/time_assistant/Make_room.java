@@ -117,8 +117,6 @@ public class Make_room extends AppCompatActivity {
                         });
                         AlertDialog alertDialog = builder.create();
                         alertDialog.show();
-
-
                     }
                 });
             }

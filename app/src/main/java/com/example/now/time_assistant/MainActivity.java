@@ -182,7 +182,6 @@ public class MainActivity extends AppCompatActivity {
                     ((AppointmentAdapter)mAdapter).getAppointment(position);
 
                     Intent intent = new Intent(MainActivity.this,Room.class);
-                    // intent.setPackage("com.android.chrome");   // 브라우저가 여러개 인 경우 콕 찍어서 크롬을 지정할 경우
                     startActivity(intent);
                 }else{          }
             }
