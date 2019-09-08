@@ -1,7 +1,9 @@
 package com.example.now.time_assistant;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -103,7 +105,19 @@ public class Make_room extends AppCompatActivity {
                         intent.putExtra("LastDay_Date", LastDay_D);
 
                         setResult(RESULT_OK, intent);
-                        finish();
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Make_room.this);
+                        builder.setTitle("도움말").setMessage("메인 화면에 추가된 약속 카테고리 안에서 사용자를 추가하고," +
+                                " 가능한 시간을 설정하세요.");
+                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        });
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.show();
+
 
                     }
                 });
